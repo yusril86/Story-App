@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Story App</string>
+    <string name="edt_empty">Tidak Boleh Kosong</string>
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="16dp"
+    android:background="@drawable/bg_card_story"
+    android:padding="8dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:src="@mipmap/ic_launcher"
+        />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_name_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/iv_story"
+        app:layout_constraintStart_toStartOf="@id/iv_story"
+        android:text="Name"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_desc_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_name_story"
+        app:layout_constraintStart_toStartOf="@id/tv_name_story"
+        android:text="Description"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_lat_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_desc_story"
+        app:layout_constraintStart_toStartOf="@id/tv_desc_story"
+        android:text="Lat"
+        android:layout_marginTop="8dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_lan_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_lat_story"
+        app:layout_constraintStart_toStartOf="@id/tv_desc_story"
+        android:text="Lan"
+
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
