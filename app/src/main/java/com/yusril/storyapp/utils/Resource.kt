@@ -22,6 +22,3 @@ data class Resource<out T>(val data : T?, val message:String?, val status: Statu
     }
 
 }
-
-
-

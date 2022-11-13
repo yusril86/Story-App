@@ -48,4 +48,16 @@
         android:src="@android:drawable/ic_input_add"
         />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/btn_new_story"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="button"
+        android:src="@android:drawable/ic_dialog_map"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

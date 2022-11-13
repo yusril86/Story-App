@@ -1,32 +1,27 @@
 package com.yusril.storyapp.ui.login
 
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.yusril.storyapp.data.model.BaseResponseData
-import com.yusril.storyapp.data.model.Login
-import com.yusril.storyapp.data.remote.ApiClient
-import com.yusril.storyapp.data.remote.ApiServices
-import com.yusril.storyapp.utils.Resource
-import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModelProvider
+import com.yusril.storyapp.data.repository.Repository
+import com.yusril.storyapp.di.Injection
 
-class LoginViewModel: ViewModel() {
-    private val mResponseLogin = MutableLiveData<Resource<BaseResponseData<Login>>>()
+class LoginViewModel(private val repository: Repository) : ViewModel() {
 
-    fun loginResponse(email:String, password:String){
-        viewModelScope.launch {
-            mResponseLogin.postValue(Resource.loading(null))
-            val response = ApiClient.API_SERVICE.login(email,password)
-            try {
-                mResponseLogin.postValue(Resource.success(data = response))
-            }catch (e:Exception){
-                mResponseLogin.postValue(Resource.error(data = null,e.toString()))
-            }
+    fun getResponseLogin(
+        email: String,
+        password: String
+    ) = repository.loginResponse(email, password)
+
+
+
+}
+class ViewModelFactoryLogin (private val context: Context): ViewModelProvider.Factory{
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(LoginViewModel::class.java)){
+            @Suppress("UNCHECKED_CAST")
+            return LoginViewModel(Injection.provideRepository(context)) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel Class")
     }
-
-    fun getResponseLogin(): MutableLiveData<Resource<BaseResponseData<Login>>> {
-        return mResponseLogin
-    }
-
 }

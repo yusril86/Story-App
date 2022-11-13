@@ -4,14 +4,15 @@ import com.google.gson.annotations.SerializedName
 
 data class BaseResponseList<T>(
     @SerializedName("listStory")
-    val listStory: List<T>? = null,
+    val listStory: List<T> ,
 
     @SerializedName("message")
     val message: String? = null,
 
     @SerializedName("error")
-    val error: String? = null
+    val error: Boolean? = null
 )
+
 
 data class BaseResponseMessage(
     @SerializedName("message")
@@ -24,9 +25,9 @@ data class BaseResponseData<T>(
     @SerializedName("message")
     val message: String? = null,
     @SerializedName("error")
-    val error: String? = null,
+    val error: Boolean? = null,
     @SerializedName("loginResult")
-    val loginResult: T? = null
+    val loginResult: T
 )
 
 

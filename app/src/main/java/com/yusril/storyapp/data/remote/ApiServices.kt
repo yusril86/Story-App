@@ -17,7 +17,9 @@ interface ApiServices {
 
     @GET("stories")
     suspend fun getStories(
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
     ): BaseResponseList<Story>
 
     @FormUrlEncoded
@@ -26,7 +28,7 @@ interface ApiServices {
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("password") password: String
-    ): Response<BaseResponseMessage>
+    ): BaseResponseMessage
 
     @JvmSuppressWildcards
     @POST("stories")
@@ -36,4 +38,10 @@ interface ApiServices {
         @Part file : MultipartBody.Part,
         @PartMap requestBody: Map<String,RequestBody>
     ): BaseResponseMessage
+
+    @GET("stories")
+    suspend fun getStoriesMap(
+        @Header("Authorization") token: String,
+        @Query("location") location: Int = 1
+    ): BaseResponseList<Story>
 }

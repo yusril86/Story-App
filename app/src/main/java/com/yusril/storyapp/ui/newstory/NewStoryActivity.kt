@@ -17,12 +17,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.yusril.storyapp.data.Result
 import com.yusril.storyapp.data.local.LoginPrefs
 import com.yusril.storyapp.databinding.ActivityNewStoryBinding
 import com.yusril.storyapp.ui.story.StoryActivity
+import com.yusril.storyapp.ui.story.StoryViewModel
+import com.yusril.storyapp.ui.story.ViewModelFactoryStory
 import com.yusril.storyapp.utils.Common
 import com.yusril.storyapp.utils.Common.createCustomTempFile
-import com.yusril.storyapp.utils.Resource
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -32,7 +34,10 @@ import java.io.File
 class NewStoryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNewStoryBinding
-    private val viewModel : NewStoryViewModel by viewModels()
+//    private val viewModel : NewStoryViewModel by viewModels()
+    private val viewModel : StoryViewModel by viewModels(){
+    ViewModelFactoryStory(this)
+}
 
 
 
@@ -179,16 +184,14 @@ class NewStoryActivity : AppCompatActivity() {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun addStory(){
+    /*private fun addStory(){
         val token = LoginPrefs(this).getToken()
         val desc = binding.edtDesc.text.toString()
-        /*val lat = binding.edtLat.text.toString()
-        val lon = binding.edtLon.text.toString()*/
+
 
         val map: HashMap<String, RequestBody> = hashMapOf()
         map["description"] = Common.createPartFromString(desc)
-       /* map["lat"] = Common.createPartFromString(lat)
-        map["lon"] = Common.createPartFromString(lon)*/
+
 
         if (getFile != null && desc.isNotEmpty()){
             val file = Common.reduceFileImage(getFile as File)
@@ -217,6 +220,54 @@ class NewStoryActivity : AppCompatActivity() {
                         binding.pbAddStory.visibility = View.GONE
                         Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                     }
+                }
+            }
+
+        }else{
+            Toast.makeText(this, "Lengkapi Field", Toast.LENGTH_SHORT).show()
+        }
+
+    }*/
+
+    private fun addStory(){
+        val token = LoginPrefs(this).getToken()
+        val desc = binding.edtDesc.text.toString()
+
+
+        val map: HashMap<String, RequestBody> = hashMapOf()
+        map["description"] = Common.createPartFromString(desc)
+
+
+        if (getFile != null && desc.isNotEmpty()){
+            val file = Common.reduceFileImage(getFile as File)
+            val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "photo",
+                file.name,
+                requestImageFile
+            )
+
+//            viewModel.fetchResponseMessageAddStory("Bearer $token",imageMultipart,map)
+            viewModel.addStory("Bearer $token",imageMultipart,map).observe(this){
+                if(it != null){
+                    when(it){
+                        is Result.Success ->{
+                            binding.pbAddStory.visibility = View.GONE
+                            Toast.makeText(this, it.data.message, Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this,StoryActivity::class.java))
+                            finish()
+                        }
+
+                        is Result.Loading ->{
+                            binding.pbAddStory.visibility = View.VISIBLE
+                        }
+
+                        is Result.Error->{
+                            binding.pbAddStory.visibility = View.GONE
+                            Toast.makeText(this, it.error, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                 }
             }
 

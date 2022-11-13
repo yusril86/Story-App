@@ -1,51 +1,24 @@
 package com.yusril.storyapp.ui.register
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.yusril.storyapp.data.model.BaseResponseMessage
-import com.yusril.storyapp.data.remote.ApiClient
-import com.yusril.storyapp.utils.Resource
-import kotlinx.coroutines.launch
-import org.json.JSONObject
-import retrofit2.Response
+import androidx.lifecycle.ViewModelProvider
+import com.yusril.storyapp.data.repository.Repository
+import com.yusril.storyapp.di.Injection
 
-class RegisterViewModel:ViewModel() {
-    private val mResponseRegister = MutableLiveData<Resource<Response<BaseResponseMessage>>>()
-    private val mErrorMessage = MutableLiveData<String>()
+class RegisterViewModel(private val repository: Repository) : ViewModel() {
 
-    fun fetchRegister(name:String, email:String, password:String){
-        viewModelScope.launch {
-            mResponseRegister.postValue(Resource.loading(null))
-            val  response = ApiClient.API_SERVICE.register(name,email,password)
+    fun registerUser(name: String, email: String, password: String) =
+        repository.register(name,email,password)
 
-            try {
-                if (response.isSuccessful){
-                    mResponseRegister.postValue(Resource.success(response))
-                }else{
-                    val errorMessage =
-                    try {
-                        val responseError = JSONObject(response.errorBody().toString())
-//                        val objResponseError = responseError.getJSONObject("error")
-                        responseError.getString("message")
+}
 
-                    } catch (e: Exception) {
-                        e.message ?: ""
-                    }
-//                    mErrorMessage.value = errorMessage.toString()
-                    mResponseRegister.postValue(Resource.error(null,errorMessage))
-                }
-            }catch (e:Exception){
-                mResponseRegister.postValue(Resource.error(null, e.toString()))
-            }
+class ViewModelFactoryRegister(private val context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return RegisterViewModel(Injection.provideRepository(context)) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel Class")
     }
-    fun getResponseRegister():MutableLiveData<Resource<Response<BaseResponseMessage>>>{
-        return mResponseRegister
-    }
-
-//    fun onError(): LiveData<String> {
-//        return mErrorMessage
-//    }
 }

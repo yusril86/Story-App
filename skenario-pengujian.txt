@@ -1,0 +1,13 @@
+1. LoginViewModelTest
+	- when Get Stories Should Not Null and Return Success
+	- when Network Error Should Return Error
+
+2. RegisterViewModelTest
+	-when Register Should Not Null   
+	-when Network Error Should Return Error 
+
+3. StoryViewModelTest
+	- when Get Stories Should Not Null
+	- when Add Story Should Not Null and Return Success
+	- when Story Maps Should Not Null and Return Success
+	- when Network Error Should Return Error

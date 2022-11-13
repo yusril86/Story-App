@@ -1,24 +1,21 @@
 package com.yusril.storyapp.ui.story
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import com.yusril.storyapp.R
+import androidx.appcompat.app.AppCompatActivity
 import com.yusril.storyapp.data.local.LoginPrefs
 import com.yusril.storyapp.databinding.ActivityStoryBinding
-import com.yusril.storyapp.ui.login.LoginViewModel
+import com.yusril.storyapp.ui.maps.MapsActivity
 import com.yusril.storyapp.ui.newstory.NewStoryActivity
 import com.yusril.storyapp.ui.splash.SplashActivity
-import com.yusril.storyapp.utils.Resource
 
 class StoryActivity : AppCompatActivity() {
     private lateinit var binding : ActivityStoryBinding
-    private val viewModel : StoryViewModel by viewModels()
+    private val viewModel : StoryViewModel by viewModels(){
+        ViewModelFactoryStory(this)
+    }
     private val storyAdapter : StoryAdapter = StoryAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +25,13 @@ class StoryActivity : AppCompatActivity() {
 
         getStories()
 
+
         binding.btnNewStory.setOnClickListener {
             startActivity(Intent(this,NewStoryActivity::class.java))
+        }
+
+        binding.btnMaps.setOnClickListener {
+            startActivity(Intent(this,MapsActivity::class.java))
         }
 
         binding.toolbar.apply {
@@ -38,20 +40,34 @@ class StoryActivity : AppCompatActivity() {
     }
 
     private fun getStories(){
-        val tokenPref = LoginPrefs(this).getToken()
+        /*val tokenPref = LoginPrefs(this).getToken()
         Log.d("getToken", tokenPref.toString())
         viewModel.fetchResponseStory("Bearer $tokenPref")
-        viewModel.getStories().observe(this){
+        viewModel.getStories().observe(this){ it ->
             when(it.status){
                 Resource.Status.SUCCESS ->{
                     if (it.data?.listStory != null){
                         binding.pbStory.visibility = View.INVISIBLE
-                        binding.rvStory.apply {
+                       *//* binding.rvStory.apply {
+                            storyAdapter.withLoadStateFooter(
+                                footer = LoadingStateAdapter {
+                                    storyAdapter.retry()
+                                }
+                            )
                             adapter = storyAdapter
-                            setHasFixedSize(true)
+                        }*//*
+//                        storyAdapter.updateAdapter(it.data.listStory)
+                        val adapter = StoryAdapter()
+                        binding.rvStory.adapter = adapter.withLoadStateFooter(
+                            footer = LoadingStateAdapter {
+                                adapter.retry()
+                            }
+                        )
+                        viewModel.getStory("Bearer $tokenPref").observe(this){
+                            adapter.submitData(lifecycle,it)
                         }
-                        storyAdapter.updateAdapter(it.data.listStory)
                     }
+
                 }
 
                 Resource.Status.LOADING ->{
@@ -62,6 +78,17 @@ class StoryActivity : AppCompatActivity() {
                     binding.pbStory.visibility = View.INVISIBLE
                 }
             }
+        }*/
+
+        val tokenPref = LoginPrefs(this).getToken()
+        val adapter = StoryAdapter()
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        viewModel.getStory("Bearer $tokenPref").observe(this){
+            adapter.submitData(lifecycle,it)
         }
     }
 

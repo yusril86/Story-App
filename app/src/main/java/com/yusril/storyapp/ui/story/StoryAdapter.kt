@@ -3,6 +3,8 @@ package com.yusril.storyapp.ui.story
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -11,13 +13,8 @@ import com.yusril.storyapp.data.model.Story
 import com.yusril.storyapp.databinding.ItemListStoryBinding
 import com.yusril.storyapp.ui.detailstory.DetailStoryActivity
 
-class StoryAdapter : RecyclerView.Adapter<StoryAdapter.ItemView>() {
-    private val mListStory : MutableList<Story> = ArrayList()
+class StoryAdapter : PagingDataAdapter<Story, StoryAdapter.ItemView>(DIFF_CALLBACK) {
 
-    fun updateAdapter(listStory : List<Story>){
-        mListStory.addAll(listStory)
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemView {
         val binding =
@@ -27,7 +24,11 @@ class StoryAdapter : RecyclerView.Adapter<StoryAdapter.ItemView>() {
     }
 
     override fun onBindViewHolder(holder: ItemView, position: Int) {
-        holder.binding.apply {
+        val data = getItem(position)
+        if (data != null) {
+            holder.binding(data)
+        }
+        /*holder.binding.apply {
             mListStory[position].apply {
                 Glide.with(holder.itemView.context)
                     .load(photoUrl)
@@ -47,15 +48,52 @@ class StoryAdapter : RecyclerView.Adapter<StoryAdapter.ItemView>() {
                     holder.itemView.context.startActivity(intent)
                 }
             }
-        }
+        }*/
     }
 
-    override fun getItemCount(): Int {
-        return mListStory.size
-    }
+//    override fun getItemCount(): Int {
+//        return mListStory.size
+//    }
 
     inner class ItemView(val binding: ItemListStoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        fun binding (data: Story) {
+            binding.tvNameStory.text = data.name
+            binding.tvDescStory.text = data.description
+            binding.tvLanStory.text = "Lan = ${data.lon.toString()}"
+            binding.tvLatStory.text = "Lat = ${data.lat.toString()}"
+                Glide.with(binding.ivStory)
+                    .load(data.photoUrl)
+                    .apply(RequestOptions()
+                        .placeholder(R.drawable.ic_launcher_background))
+                    .into(binding.ivStory)
 
+            itemView.setOnClickListener {
+                val intent = Intent(itemView.context,DetailStoryActivity::class.java)
+                intent.putExtra("NAME_EXTRA",data.name)
+                intent.putExtra("DETAIL_EXTRA",data.description)
+                intent.putExtra("IMAGE_EXTRA",data.photoUrl)
+                itemView.context.startActivity(intent)
+            }
+        }
+    }
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Story>() {
+            override fun areItemsTheSame(
+                oldItem: Story,
+                newItem: Story
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: Story,
+                newItem: Story
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
     }
 }
+
+
