@@ -2,11 +2,10 @@ package com.yusril.storyapp.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.liveData
+import androidx.paging.*
 import com.yusril.storyapp.data.Result
+import com.yusril.storyapp.data.StoryRemoteMediator
+import com.yusril.storyapp.data.local.database.StoryDatabase
 import com.yusril.storyapp.data.model.*
 import com.yusril.storyapp.data.paging.StoryPagingSource
 import com.yusril.storyapp.data.remote.ApiClient
@@ -15,7 +14,7 @@ import com.yusril.storyapp.utils.Resource
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
-class Repository(private val apiServices: ApiServices) {
+class Repository(private val apiServices: ApiServices,private val storyDatabase: StoryDatabase) {
 
     fun register(
         name: String,
@@ -48,12 +47,15 @@ class Repository(private val apiServices: ApiServices) {
     }
 
     fun getStory(token: String): LiveData<PagingData<Story>> {
+        @OptIn(ExperimentalPagingApi::class)
         return Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
+            remoteMediator = StoryRemoteMediator(storyDatabase, apiServices,token),
             pagingSourceFactory = {
-                StoryPagingSource(apiServices, token)
+//                StoryPagingSource(apiServices, token)
+                storyDatabase.storyDao().getAllStory()
             }
         ).liveData
     }

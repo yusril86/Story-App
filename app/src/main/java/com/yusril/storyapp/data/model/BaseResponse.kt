@@ -3,14 +3,14 @@ package com.yusril.storyapp.data.model
 import com.google.gson.annotations.SerializedName
 
 data class BaseResponseList<T>(
-    @SerializedName("listStory")
+    @field:SerializedName("listStory")
     val listStory: List<T> ,
 
-    @SerializedName("message")
-    val message: String? = null,
+    @field:SerializedName("message")
+    val message: String,
 
-    @SerializedName("error")
-    val error: Boolean? = null
+    @field:SerializedName("error")
+    val error: Boolean
 )
 
 

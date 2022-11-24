@@ -28,7 +28,7 @@ object DataDummy {
 
     fun generateDummyStoryEntity():List<Story>{
         val storyList : ArrayList<Story> = arrayListOf()
-        for (i in 1..10){
+        for (i in 1..100){
             val stories = Story(
                 "$i",
                 "yusril",

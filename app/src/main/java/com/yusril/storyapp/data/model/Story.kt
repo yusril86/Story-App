@@ -1,21 +1,31 @@
 package com.yusril.storyapp.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "story")
 data class Story(
-    @SerializedName("id")
-    val id: String? = null,
-    @SerializedName("name")
+    @PrimaryKey
+    @field:SerializedName("id")
+    val id: String ,
+
+    @field:SerializedName("name")
     val name: String? = null,
-    @SerializedName("description")
+
+    @field:SerializedName("description")
     val description: String? = null,
-    @SerializedName("photoUrl")
+
+    @field:SerializedName("photoUrl")
     val photoUrl: String? = null,
-    @SerializedName("createdAt")
+
+    @field:SerializedName("createdAt")
     val createdAt: String? = null,
-    @SerializedName("lat")
+
+    @field:SerializedName("lat")
     val lat: Double? = 0.0,
-    @SerializedName("lon")
+
+    @field:SerializedName("lon")
     val lon: Double? = 0.0,
 
 )
